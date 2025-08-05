@@ -1,0 +1,281 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  municipalityId String
+  departmentId   String
+  documentTypeId String
+  firstname      String   @db.VarChar(50)
+  lastname       String   @db.VarChar(50)
+  password       String   @db.VarChar(255)
+  documentNumber String   @unique @db.VarChar(20)
+  phone          String   @db.VarChar(15)
+  role           Role     @default(EMPLOYEE)
+  status         Boolean  @default(true)
+  gender         Gender   @default(OTHER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  municipality Municipality @relation(fields: [municipalityId], references: [id])
+  department   Department   @relation(fields: [departmentId], references: [id])
+  documentType DocumentType @relation(fields: [documentTypeId], references: [id])
+  Citation     Citation[]
+}
+
+model Department {
+  id   String @id @default(cuid())
+  name String @unique @db.VarChar(100)
+
+  User User[]
+}
+
+model Municipality {
+  id     String  @id @default(cuid())
+  name   String  @unique @db.VarChar(100)
+  status Boolean @default(true)
+
+  User     User[]
+  Branch   Branch[]
+  Workshop Workshop[]
+}
+
+model DocumentType {
+  id           String @id @default(cuid())
+  name         String @unique @db.VarChar(50)
+  abbreviation String @unique @db.VarChar(5)
+
+  User   User[]
+  Client Client[]
+}
+
+model Client {
+  id             String @id @default(cuid())
+  documentTypeId String
+  name           String @db.VarChar(100)
+  phone          String @db.VarChar(15)
+  email          String @unique @db.VarChar(100)
+  documentNumber String @unique @db.VarChar(20)
+  gender         Gender @default(OTHER)
+
+  documentType DocumentType @relation(fields: [documentTypeId], references: [id])
+  Citation     Citation[]
+  Motorcycle   Motorcycle[]
+}
+
+model Branch {
+  id             String @id @default(cuid())
+  municipalityId String
+  name           String @unique @db.VarChar(100)
+  address        String @db.VarChar(255)
+  phone          String @db.VarChar(15)
+
+  municipality Municipality @relation(fields: [municipalityId], references: [id])
+  Citation     Citation[]
+  Inventory    Inventory[]
+}
+
+model Workshop {
+  id             String @id @default(cuid())
+  municipalityId String
+  name           String @unique @db.VarChar(100)
+  address        String @db.VarChar(255)
+  phone          String @db.VarChar(15)
+
+  municipality Municipality  @relation(fields: [municipalityId], references: [id])
+  Citation     Citation[]
+  Maintenance  Maintenance[]
+}
+
+model Citation {
+  id           String   @id @default(cuid())
+  userId       String
+  clientId     String
+  branchId     String
+  workshopId   String
+  motorcycleId String
+  description  String   @db.VarChar(255)
+  status       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user        User          @relation(fields: [userId], references: [id])
+  client      Client        @relation(fields: [clientId], references: [id])
+  branch      Branch        @relation(fields: [branchId], references: [id])
+  workshop    Workshop      @relation(fields: [workshopId], references: [id])
+  motorcycle  Motorcycle    @relation(fields: [motorcycleId], references: [id])
+  Maintenance Maintenance[]
+}
+
+model Motorcycle {
+  id            String   @id @default(cuid())
+  clientId      String
+  cylinderId    String
+  engineTypeId  String
+  brand         String   @db.VarChar(50)
+  model         String   @db.VarChar(50)
+  year          Int
+  licensePlate  String   @unique @db.VarChar(10)
+  color         String   @db.VarChar(30)
+  numberEngine  String   @unique @db.VarChar(50)
+  numberChassis String   @unique @db.VarChar(50)
+  cubicaje      Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  client     Client     @relation(fields: [clientId], references: [id])
+  engineType EngineType @relation(fields: [engineTypeId], references: [id])
+  Citation   Citation[]
+  Cylinder   Cylinder?
+}
+
+model Cylinder {
+  id           String   @id @default(cuid())
+  motorcycleId String   @unique
+  diameter     Float
+  stroke       Float
+  compression  Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  motorcycle Motorcycle @relation(fields: [motorcycleId], references: [id])
+}
+
+model EngineType {
+  id         String   @id @default(cuid())
+  type       String   @db.VarChar(50)
+  horsepower Int
+  torque     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  Motorcycle Motorcycle[]
+}
+
+model Maintenance {
+  id          String   @id @default(cuid())
+  citationId  String
+  workshopId  String
+  description String   @db.VarChar(255)
+  date        DateTime @default(now())
+  cost        Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  citation            Citation              @relation(fields: [citationId], references: [id])
+  workshop            Workshop              @relation(fields: [workshopId], references: [id])
+  Product             Product?              @relation(fields: [productId], references: [id])
+  productId           String?
+  ReplacementAssigned ReplacementAssigned[]
+}
+
+model Product {
+  id          String          @id @default(cuid())
+  name        String          @unique @db.VarChar(100)
+  description String          @db.VarChar(255)
+  price       Float           @default(0)
+  stock       Int             @default(0)
+  type        ProductType     @default(REPLACEMENT)
+  condition   ConditionStatus @default(NEW)
+  status      StatusProduct   @default(AVAILABLE)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  Maintenance         Maintenance[]
+  Inventory           Inventory[]
+  ReplacementAssigned ReplacementAssigned[]
+}
+
+model Inventory {
+  id        String          @id @default(cuid())
+  productId String
+  branchId  String
+  quantity  Int             @default(0)
+  location  String          @db.VarChar(100)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  status    StatusInventory @default(AVAILABLE)
+
+  product  Product    @relation(fields: [productId], references: [id])
+  branch   Branch     @relation(fields: [branchId], references: [id])
+  Movement Movement[]
+}
+
+model Movement {
+  id          String          @id @default(cuid())
+  inventoryId String
+  quantity    Int
+  type        MOVEMENT_TYPE   @default(ENTRY)
+  status      MOVEMENT_STATUS @default(PENDING)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id])
+}
+
+model ReplacementAssigned {
+  id            String   @id @default(cuid())
+  maintenanceId String
+  productId     String
+  quantity      Int
+  price         Float
+  total         Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  maintenance Maintenance @relation(fields: [maintenanceId], references: [id])
+  product     Product     @relation(fields: [productId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ConditionStatus {
+  NEW
+  USED
+}
+
+enum StatusProduct {
+  AVAILABLE
+  UNAVAILABLE
+  IN_REPAIR
+}
+
+enum MOVEMENT_TYPE {
+  ENTRY
+  EXIT
+}
+
+enum MOVEMENT_STATUS {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum StatusInventory {
+  AVAILABLE
+  UNAVAILABLE
+  IN_REPAIR
+  PENDING
+}
+
+enum ProductType {
+  REPLACEMENT
+  SERVICE
+  ACCESSORY
+  MATERIAL
+}

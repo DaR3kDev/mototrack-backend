@@ -208,13 +208,13 @@ model Inventory {
 }
 
 model Movement {
-  id          String          @id @default(cuid())
+  id          String         @id @default(cuid())
   inventoryId String
   quantity    Int
-  type        MOVEMENT_TYPE   @default(ENTRY)
-  status      MOVEMENT_STATUS @default(PENDING)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  type        MovementType   @default(ENTRY)
+  status      MovementStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
   inventory Inventory @relation(fields: [inventoryId], references: [id])
 }
@@ -255,12 +255,12 @@ enum StatusProduct {
   IN_REPAIR
 }
 
-enum MOVEMENT_TYPE {
+enum MovementType {
   ENTRY
   EXIT
 }
 
-enum MOVEMENT_STATUS {
+enum MovementStatus {
   PENDING
   COMPLETED
   CANCELLED

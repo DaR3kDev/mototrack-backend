@@ -27,7 +27,7 @@ export class DocumentTypeController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(@Query() paginationDto: PaginationDto) {
+  pagination(@Query() paginationDto: PaginationDto) {
     return this.documentTypeService.pagination(paginationDto);
   }
 

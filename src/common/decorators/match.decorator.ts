@@ -1,10 +1,17 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
-export function Match<T>(property: keyof T, validationOptions?: ValidationOptions) {
-  return function (object: T, propertyName: string) {
+/**
+ * Valida que el valor de una propiedad coincida con otra propiedad del mismo objeto.
+ *
+ * @template T Tipo del objeto que contiene las propiedades.
+ * @param property Propiedad con la que debe coincidir.
+ * @param validationOptions Opciones de validación de class-validator.
+ */
+export function Match<T extends object>(property: keyof T, validationOptions?: ValidationOptions) {
+  return function (object: object, propertyName: string): void {
     registerDecorator({
       name: 'Match',
-      target: Object.getPrototypeOf(object),
+      target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [property],
@@ -15,8 +22,8 @@ export function Match<T>(property: keyof T, validationOptions?: ValidationOption
           return value === relatedValue;
         },
         defaultMessage(args: ValidationArguments): string {
-          const [relatedPropertyName] = args.constraints as [string];
-          return `${propertyName} debe coincidir con ${relatedPropertyName}`;
+          const [relatedPropertyName] = args.constraints as [keyof T];
+          return `${args.property} debe coincidir con ${String(relatedPropertyName)}`;
         },
       },
     });

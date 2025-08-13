@@ -40,10 +40,10 @@ export class UsersController {
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update({ id, dto: updateUserDto });
+    return this.usersService.update(id, updateUserDto);
   }
 
-  @Patch(':id')
+  @Patch('/toggle/:id')
   @HttpCode(HttpStatus.OK)
   toggleStatus(@Param('id') id: string) {
     return this.usersService.toggleStatus(id);

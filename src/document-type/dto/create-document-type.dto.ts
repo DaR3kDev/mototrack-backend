@@ -14,7 +14,9 @@ export class CreateDocumentTypeDto {
   @IsDefined({ message: 'El nombre es requerido' })
   @IsString({ message: 'El nombre debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
-  @IsAlpha('es-ES', { message: 'El nombre solo puede contener letras' })
+  @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, {
+    message: 'El nombre solo puede contener letras y espacios',
+  })
   @Length(2, 50, { message: 'El nombre debe tener entre 2 y 50 caracteres' })
   name: string;
 

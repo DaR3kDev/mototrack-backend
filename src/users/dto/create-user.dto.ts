@@ -2,30 +2,33 @@ import {
   IsString,
   IsNotEmpty,
   Length,
-  IsAlpha,
   IsAlphanumeric,
   Matches,
   MinLength,
   IsEnum,
   IsBoolean,
-  IsUUID,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { Role, Gender } from '@prisma/client';
 import { Match } from '../../common/decorators/match.decorator';
+import { IsCuid } from 'src/common/decorators/is-cuid.decorator';
 
 export class CreateUserDto {
   @Transform(({ value }) => value.trim().replace(/\s+/g, ' '))
   @IsString({ message: 'El nombre debe ser texto' })
   @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
-  @IsAlpha('es-ES', { message: 'El nombre solo puede contener letras' })
+  @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, {
+    message: 'El nombre solo puede contener letras y espacios',
+  })
   @Length(2, 50, { message: 'El nombre debe tener entre 2 y 50 letras' })
   firstname: string;
 
   @Transform(({ value }) => value.trim().replace(/\s+/g, ' '))
   @IsString({ message: 'El apellido debe ser texto' })
   @IsNotEmpty({ message: 'El apellido no puede estar vacío' })
-  @IsAlpha('es-ES', { message: 'El apellido solo puede contener letras' })
+  @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/, {
+    message: 'El apellido solo puede contener letras y espacios',
+  })
   @Length(2, 50, { message: 'El apellido debe tener entre 2 y 50 letras' })
   lastname: string;
 
@@ -38,7 +41,7 @@ export class CreateUserDto {
   password: string;
 
   @Match<CreateUserDto>('password', { message: 'Las contraseñas no coinciden' })
-  confirmPassword: string;
+  confirmPassword!: string;
 
   @Transform(({ value }) => value.replace(/\s+/g, '').toUpperCase())
   @IsAlphanumeric('es-ES', {
@@ -61,12 +64,12 @@ export class CreateUserDto {
   @IsEnum(Gender, { message: 'El género no es válido' })
   gender: Gender;
 
-  @IsUUID('4', { message: 'El ID de municipio no es válido' })
-  municipalityId: string;
+  @IsCuid({ message: 'El ID de municipio no es válido' })
+  municipalityId!: string;
 
-  @IsUUID('4', { message: 'El ID de departamento no es válido' })
-  departmentId: string;
+  @IsCuid({ message: 'El ID de departamento no es válido' })
+  departmentId!: string;
 
-  @IsUUID('4', { message: 'El ID de tipo de documento no es válido' })
-  documentTypeId: string;
+  @IsCuid({ message: 'El ID de tipo de documento no es válido' })
+  documentTypeId!: string;
 }

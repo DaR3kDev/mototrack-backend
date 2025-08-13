@@ -49,9 +49,11 @@ export class UsersService {
     if (/12345|abcdef/i.test(dto.password))
       throw new BadRequestException('La contraseña no puede contener secuencias simples');
 
+    const { confirmPassword, ...data } = dto;
+
     await this.db.user.create({
       data: {
-        ...dto,
+        ...data,
         password: await argon2.hash(dto.password, {
           type: argon2.argon2id,
           timeCost: 4,
@@ -84,6 +86,19 @@ export class UsersService {
         where,
         skip: (page - 1) * limit,
         take: limit,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          documentNumber: true,
+          phone: true,
+          role: true,
+          status: true,
+          gender: true,
+          municipality: { select: { name: true } },
+          documentType: { select: { name: true, abbreviation: true } },
+        },
       }),
       this.db.user.count({ where }),
     ]);
@@ -93,15 +108,30 @@ export class UsersService {
     return new ResponseHelper('Usuarios obtenidos exitosamente', data);
   }
 
-  async findOne(id: string): Promise<ResponseHelper<User>> {
-    const user = await this.db.user.findUnique({ where: { id } });
+  async findOne(id: string): Promise<ResponseHelper<Partial<User>>> {
+    const user = await this.db.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        documentNumber: true,
+        phone: true,
+        role: true,
+        status: true,
+        gender: true,
+        municipality: { select: { name: true } },
+        department: { select: { name: true } },
+        documentType: { select: { name: true, abbreviation: true } },
+      },
+    });
 
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
     return new ResponseHelper('Usuario obtenido exitosamente', user);
   }
 
-  async update({ id, dto }: { id: string; dto: UpdateUserDto }): Promise<ResponseHelper<void>> {
+  async update(id: string, dto: UpdateUserDto): Promise<ResponseHelper<void>> {
     const user = await this.db.user.findUnique({ where: { id } });
 
     if (!user) throw new NotFoundException('Usuario no encontrado');
@@ -110,24 +140,54 @@ export class UsersService {
       const documentExists = await this.db.user.findUnique({
         where: { documentNumber: dto.documentNumber },
       });
-
       if (documentExists) throw new ConflictException('El número de documento ya está en uso');
     }
 
     if (dto.phone && dto.phone !== user.phone) {
-      const phoneExists = await this.db.user.findFirst({
-        where: { phone: dto.phone },
-      });
-
+      const phoneExists = await this.db.user.findFirst({ where: { phone: dto.phone } });
       if (phoneExists) throw new ConflictException('El teléfono ya está en uso');
     }
 
+    if (dto.confirmPassword && dto.password !== dto.confirmPassword)
+      throw new BadRequestException('Las contraseñas no coinciden');
+
+    if (/(\w)\1{4,}/.test(dto.password!))
+      throw new BadRequestException('La contraseña no puede tener caracteres repetidos en exceso');
+
+    if (/12345|abcdef/i.test(dto.password!))
+      throw new BadRequestException('La contraseña no puede contener secuencias simples');
+
+    if (dto.password === dto.documentNumber || dto.password === dto.phone)
+      throw new BadRequestException('La contraseña no puede ser igual al documento o teléfono');
+
+    const { confirmPassword, ...updateData } = dto;
+
+    updateData.password = await argon2.hash(updateData.password!, {
+      type: argon2.argon2id,
+      timeCost: 4,
+      memoryCost: 2 ** 16,
+      parallelism: 2,
+    });
+
     await this.db.user.update({
       where: { id },
-      data: dto,
+      data: updateData,
     });
 
     return new ResponseHelper('Usuario actualizado exitosamente');
+  }
+
+  async toggleStatus(id: string): Promise<ResponseHelper<void>> {
+    const user = await this.db.user.findUnique({ where: { id } });
+
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+
+    await this.db.user.update({
+      where: { id },
+      data: { status: !user.status },
+    });
+
+    return new ResponseHelper(`Usuario ${user.status ? 'desactivado' : 'activado'} exitosamente`);
   }
 
   async remove(id: string): Promise<ResponseHelper<void>> {
@@ -141,18 +201,5 @@ export class UsersService {
     await this.db.user.delete({ where: { id } });
 
     return new ResponseHelper('Usuario eliminado exitosamente');
-  }
-
-  async toggleStatus(id: string): Promise<ResponseHelper<void>> {
-    const user = await this.db.user.findUnique({ where: { id } });
-
-    if (!user) throw new NotFoundException('Usuario no encontrado');
-
-    await this.db.user.update({
-      where: { id },
-      data: { status: !user.status },
-    });
-
-    return new ResponseHelper('Estado de usuario actualizado exitosamente');
   }
 }

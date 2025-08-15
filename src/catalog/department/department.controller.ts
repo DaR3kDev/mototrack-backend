@@ -13,7 +13,7 @@ import {
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
 
 @Controller('department')
 export class DepartmentController {

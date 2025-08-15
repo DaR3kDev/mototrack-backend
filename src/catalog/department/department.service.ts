@@ -2,11 +2,11 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { Department, Prisma } from '@prisma/client';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { DatabaseService } from '../database/database.services';
-import { ResponseHelper } from '../common/response/response.helper';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
-import { PaginatedResponse } from '../common/pagination/interfaces/pagination.interface';
-import { PaginationHelper } from '../common/pagination/pagination';
+import { DatabaseService } from '../../database/database.services';
+import { ResponseHelper } from '../../common/response/response.helper';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/pagination/interfaces/pagination.interface';
+import { PaginationHelper } from '../../common/pagination/pagination';
 
 @Injectable()
 export class DepartmentService {

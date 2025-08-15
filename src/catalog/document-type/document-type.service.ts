@@ -1,12 +1,12 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { DocumentType, Prisma } from '@prisma/client';
-import { DatabaseService } from '../database/database.services';
+import { DatabaseService } from '../../database/database.services';
 import { CreateDocumentTypeDto } from './dto/create-document-type.dto';
 import { UpdateDocumentTypeDto } from './dto/update-document-type.dto';
-import { ResponseHelper } from '../common/response/response.helper';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
-import { PaginatedResponse } from '../common/pagination/interfaces/pagination.interface';
-import { PaginationHelper } from '../common/pagination/pagination';
+import { ResponseHelper } from '../../common/response/response.helper';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/pagination/interfaces/pagination.interface';
+import { PaginationHelper } from '../../common/pagination/pagination';
 
 @Injectable()
 export class DocumentTypeService {

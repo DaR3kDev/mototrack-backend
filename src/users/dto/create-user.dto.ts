@@ -11,7 +11,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { Role, Gender } from '@prisma/client';
 import { Match } from '../../common/decorators/match.decorator';
-import { IsCuid } from 'src/common/decorators/is-cuid.decorator';
+import { IsCuid } from '../../common/decorators/is-cuid.decorator';
 
 export class CreateUserDto {
   @Transform(({ value }) => value.trim().replace(/\s+/g, ' '))
@@ -62,6 +62,7 @@ export class CreateUserDto {
   status: boolean;
 
   @IsEnum(Gender, { message: 'El género no es válido' })
+  @IsNotEmpty({ message: 'El género no puede estar vacío' })
   gender: Gender;
 
   @IsCuid({ message: 'El ID de municipio no es válido' })

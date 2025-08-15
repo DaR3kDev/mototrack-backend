@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
-import { DocumentTypeModule } from './document-type/document-type.module';
-import { DepartmentModule } from './department/department.module';
-import { MunicipalityModule } from './municipality/municipality.module';
+import { ClientsModule } from './clients/clients.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, DocumentTypeModule, DepartmentModule, MunicipalityModule],
+  imports: [DatabaseModule, UsersModule, CatalogModule, ClientsModule],
 })
 export class AppModule {}

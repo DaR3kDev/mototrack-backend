@@ -2,11 +2,11 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { Municipality, Prisma } from '@prisma/client';
 import { CreateMunicipalityDto } from './dto/create-municipality.dto';
 import { UpdateMunicipalityDto } from './dto/update-municipality.dto';
-import { DatabaseService } from '../database/database.services';
-import { ResponseHelper } from '../common/response/response.helper';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
-import { PaginatedResponse } from '../common/pagination/interfaces/pagination.interface';
-import { PaginationHelper } from '../common/pagination/pagination';
+import { DatabaseService } from '../../database/database.services';
+import { ResponseHelper } from '../../common/response/response.helper';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
+import { PaginatedResponse } from '../../common/pagination/interfaces/pagination.interface';
+import { PaginationHelper } from '../../common/pagination/pagination';
 
 @Injectable()
 export class MunicipalityService {

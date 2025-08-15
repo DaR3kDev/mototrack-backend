@@ -13,7 +13,7 @@ import {
 import { MunicipalityService } from './municipality.service';
 import { CreateMunicipalityDto } from './dto/create-municipality.dto';
 import { UpdateMunicipalityDto } from './dto/update-municipality.dto';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
 
 @Controller('municipality')
 export class MunicipalityController {

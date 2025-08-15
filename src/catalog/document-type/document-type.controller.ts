@@ -13,7 +13,7 @@ import {
 import { DocumentTypeService } from './document-type.service';
 import { CreateDocumentTypeDto } from './dto/create-document-type.dto';
 import { UpdateDocumentTypeDto } from './dto/update-document-type.dto';
-import { PaginationDto } from '../common/pagination/dto/pagination.dto';
+import { PaginationDto } from '../../common/pagination/dto/pagination.dto';
 
 @Controller('document-type')
 export class DocumentTypeController {

@@ -85,6 +85,15 @@ export class ClientsService {
       where: {
         id,
       },
+      select: {
+        id: true,
+        email: true,
+        documentNumber: true,
+        name: true,
+        phone: true,
+        gender: true,
+        documentType: { select: { name: true, abbreviation: true } },
+      },
     });
 
     if (!client) throw new NotFoundException('Cliente no encontrado');

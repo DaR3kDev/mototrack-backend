@@ -3,7 +3,7 @@ import { MotorcycleService } from './motorcycle.service';
 import { CreateMotorcycleDto } from './dto/create-motorcycle.dto';
 import { UpdateMotorcycleDto } from './dto/update-motorcycle.dto';
 
-@Controller('motorcycle')
+@Controller('vehicle/motorcycle')
 export class MotorcycleController {
   constructor(private readonly motorcycleService: MotorcycleService) {}
 

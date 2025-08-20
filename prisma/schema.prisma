@@ -30,20 +30,24 @@ model User {
 }
 
 model Department {
-  id   String @id @default(cuid())
-  name String @unique @db.VarChar(100)
+  id             String         @id @default(cuid())
+  name           String         @unique @db.VarChar(100)
+  municipalities Municipality[]
 
   User User[]
 }
 
 model Municipality {
-  id     String  @id @default(cuid())
-  name   String  @unique @db.VarChar(100)
-  status Boolean @default(true)
+  id           String  @id @default(cuid())
+  name         String  @db.VarChar(100)
+  departmentId String?
 
-  User     User[]
-  Branch   Branch[]
-  Workshop Workshop[]
+  User       User[]
+  Branch     Branch[]
+  Workshop   Workshop[]
+  Department Department? @relation(fields: [departmentId], references: [id])
+
+  @@unique([name, departmentId])
 }
 
 model DocumentType {
@@ -116,8 +120,8 @@ model Citation {
 model Motorcycle {
   id            String   @id @default(cuid())
   clientId      String
-  cylinderId    String
-  engineTypeId  String
+  cylinderId    String?
+  engineTypeId  String?
   brand         String   @db.VarChar(50)
   model         String   @db.VarChar(50)
   year          Int
@@ -129,8 +133,8 @@ model Motorcycle {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  client     Client     @relation(fields: [clientId], references: [id])
-  engineType EngineType @relation(fields: [engineTypeId], references: [id])
+  client     Client      @relation(fields: [clientId], references: [id])
+  engineType EngineType? @relation(fields: [engineTypeId], references: [id])
   Citation   Citation[]
   Cylinder   Cylinder?
 }

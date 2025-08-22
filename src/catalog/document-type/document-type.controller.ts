@@ -7,13 +7,13 @@ export class DocumentTypeController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.documentTypeService.findAll();
+  async findAll() {
+    return await this.documentTypeService.findAll();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    return this.documentTypeService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.documentTypeService.findOne(id);
   }
 }

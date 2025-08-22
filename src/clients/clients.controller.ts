@@ -21,31 +21,31 @@ export class ClientsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientsService.create(createClientDto);
+  async create(@Body() createClientDto: CreateClientDto) {
+    return await this.clientsService.create(createClientDto);
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  pagination(@Query() paginationDto: PaginationDto) {
-    return this.clientsService.pagination(paginationDto);
+  async pagination(@Query() paginationDto: PaginationDto) {
+    return await this.clientsService.pagination(paginationDto);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    return this.clientsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.clientsService.findOne(id);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
-    return this.clientsService.update(id, updateClientDto);
+  async update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+    return await this.clientsService.update(id, updateClientDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id') id: string) {
-    return this.clientsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.clientsService.remove(id);
   }
 }

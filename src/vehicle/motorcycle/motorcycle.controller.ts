@@ -21,37 +21,37 @@ export class MotorcycleController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  create(@Body() dto: CreateMotorcycleDto) {
-    return this.motorcycleService.create(dto);
+  async create(@Body() dto: CreateMotorcycleDto) {
+    return await this.motorcycleService.create(dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  pagination(@Query() dto: PaginationMotorCycleDto) {
-    return this.motorcycleService.pagination(dto);
+  async pagination(@Query() dto: PaginationMotorCycleDto) {
+    return await this.motorcycleService.pagination(dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.motorcycleService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.motorcycleService.findOne(id);
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('plate/:licensePlate')
-  findByPlate(@Param('licensePlate') plate: string) {
-    return this.motorcycleService.findByPlate(plate);
+  async findByPlate(@Param('licensePlate') plate: string) {
+    return await this.motorcycleService.findByPlate(plate);
   }
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateMotorcycleDto) {
-    return this.motorcycleService.update(id, dto);
+  async update(@Param('id') id: string, @Body() dto: UpdateMotorcycleDto) {
+    return await this.motorcycleService.update(id, dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.motorcycleService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.motorcycleService.remove(id);
   }
 }

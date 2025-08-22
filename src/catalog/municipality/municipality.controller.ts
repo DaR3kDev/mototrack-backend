@@ -7,13 +7,13 @@ export class MunicipalityController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.municipalityService.findAll();
+  async findAll() {
+    return await this.municipalityService.findAll();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    return this.municipalityService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.municipalityService.findOne(id);
   }
 }

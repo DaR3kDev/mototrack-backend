@@ -7,13 +7,13 @@ export class DepartmentController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll() {
-    return this.departmentService.findAll();
+  async findAll() {
+    return await this.departmentService.findAll();
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    return this.departmentService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.departmentService.findOne(id);
   }
 }

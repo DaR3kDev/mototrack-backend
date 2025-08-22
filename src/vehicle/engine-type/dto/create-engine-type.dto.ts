@@ -20,5 +20,4 @@ export class CreateEngineTypeDto {
   @IsInt({ message: 'El torque debe ser un número entero' })
   @Min(0, { message: 'El torque no puede ser negativo' })
   torque: number;
-  id: any;
 }

@@ -120,7 +120,6 @@ model Citation {
 model Motorcycle {
   id            String   @id @default(cuid())
   clientId      String
-  cylinderId    String?
   engineTypeId  String?
   brand         String   @db.VarChar(50)
   model         String   @db.VarChar(50)
@@ -134,9 +133,9 @@ model Motorcycle {
   updatedAt     DateTime @updatedAt
 
   client     Client      @relation(fields: [clientId], references: [id])
-  engineType EngineType? @relation(fields: [engineTypeId], references: [id])
-  Citation   Citation[]
+  engineType EngineType? @relation(fields: [engineTypeId], references: [id], onDelete: Cascade)
   Cylinder   Cylinder?
+  Citation   Citation[]
 }
 
 model Cylinder {
@@ -148,7 +147,7 @@ model Cylinder {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  motorcycle Motorcycle @relation(fields: [motorcycleId], references: [id])
+  motorcycle Motorcycle @relation(fields: [motorcycleId], references: [id], onDelete: Cascade)
 }
 
 model EngineType {
